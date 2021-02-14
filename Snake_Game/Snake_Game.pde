@@ -1,9 +1,9 @@
   
 import processing.sound.*;
 
-final int X = 200;
-final int Y = 140;
-final int boxSize = 8;
+final int X = 150;
+final int Y = 100;
+final int boxSize = 10;
 
 int turnLenght = 100;
 int lastUpdateTime = 0;
@@ -18,8 +18,8 @@ int topScore = 0;
 
 final color onBoxColor = color(255);
 final color offBoxColor = color(50);
-final color pointColor = color(0,255,0);
-final color badBlockColor = color(255,0,0);
+final color pointColor = color(0,175,0);
+final color badBlockColor = color(200,0,0);
 
 boolean paused = false;
 boolean started = false;
@@ -95,7 +95,7 @@ class Snake {
      case 2:
      x_next += 1;
      if(x_next >= X) {
-      y_next = 0; 
+      x_next = 0; 
      }
      break;
      case -1:
@@ -227,9 +227,9 @@ void draw() {
      PFont font;
     font = loadFont("ARDESTINE-96.vlw");
     textFont(font);
-    fill(200, 0, 200);
+    fill(255, 184, 75);
     textAlign(CENTER, CENTER);
-    textSize(96);
+    textSize(84);
     text("--- Game Over ---", ((X-0)*boxSize)/2,((Y-50)*boxSize)/2);
     text(String.format("Your Score is %d",s.GetScore()), ((X-0)*boxSize)/2,((Y-25)*boxSize)/2);
     if(s.GetScore() > topScore) {
@@ -247,12 +247,12 @@ void draw() {
     font = loadFont("ARDESTINE-96.vlw");
     textFont(font);
     textSize(128);
-    fill(200, 0, 200);
+    fill(255, 184, 75);
     textAlign(CENTER, CENTER);
-    text("--- Snake ---", ((X-0)*boxSize)/2,((Y-100)*boxSize)/2);
+    text("--- Snake ---", ((X-0)*boxSize)/2,((Y-(Y/2))*boxSize)/2);
 
     textSize(96);
-    text(String.format("Top Score: %d",topScore), ((X-0)*boxSize)/2,((Y-50)*boxSize)/2);
+    text(String.format("Top Score: %d",topScore), ((X-0)*boxSize)/2,((Y-(Y/4))*boxSize)/2);
     
     text("Press Enter to Start", ((X-0)*boxSize)/2,((Y-0)*boxSize)/2);
    // show start screen 
@@ -262,7 +262,7 @@ void draw() {
      PFont font;
     font = loadFont("ARDESTINE-96.vlw");
     textFont(font);
-    fill(200, 0, 200);
+    fill(255, 184, 75);
     textAlign(CENTER, CENTER);
     textSize(96);
     text("--- Paused ---", ((X-0)*boxSize)/2,((Y-50)*boxSize)/2);
@@ -323,6 +323,7 @@ void keyPressed() {
   }
   else {
    paused = !paused;
+   triangle.stop();
    return;
   }
  }
