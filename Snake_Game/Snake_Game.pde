@@ -2,11 +2,12 @@
 import processing.sound.*;
 
 final int X = 150;
-final int Y = 100;
+final int Y = 90;
 final int boxSize = 10;
 
 int turnLenght = 100; // how many miliseconds each turn takes
 int beatInterval = 8;
+int beatInterval2 = 7;
 int lastUpdateTime = 0;
 
 int currentTurn = 0;
@@ -30,11 +31,12 @@ boolean gameOver = false;
 int [][] boxes = new int [X][Y];
 
 SoundFile startSound;
+SoundFile beatSound;
 SinOsc eat1 = new SinOsc(this);
 SinOsc eat2 = new SinOsc(this);
 TriOsc triangle = new TriOsc(this);
 TriOsc death = new TriOsc(this);
-
+TriOsc tri2 = new TriOsc(this);
 
 void PlayEatSound() {
   
@@ -48,6 +50,7 @@ void PlayEatSound() {
 
 void PlayDeathSound() {
   death.play();
+  tri2.stop();
   delay(1000);
   death.stop();
 }
@@ -125,8 +128,11 @@ class Snake {
      // we picked up a score, add to score and increase our size
      score += 10;
      size++;
-     maxBadBlocks++;
-     turnLenght--;
+     
+     if(score%20 == 0) {
+       turnLenght--;
+       maxBadBlocks++;
+     }
      if(turnLenght == 0) {
        // you win!!
        gameOver = true;
@@ -190,7 +196,7 @@ void AddBadBlocks() {
 
 void settings() {
   //this should be here
-  size(X * boxSize, Y * boxSize);
+  size(X * boxSize, Y * boxSize+100);
 }
 
 Snake s;
@@ -204,16 +210,37 @@ void setup() {
   s = new Snake();
   startSound = new SoundFile(this,"intro.wav");
   death.freq(200);
+  tri2.freq(100);
   // place the snake starting in the middle
 }
 
-
+void ShowStatus() {
+  // draw header
+  fill(color(0));
+  rect(0,0,X*boxSize,100);
+  // print status info
+  //score left, speed right
+  PFont font;
+    font = loadFont("ARDESTINE-96.vlw");
+    textFont(font);
+    fill(255, 184, 75);
+    textAlign(LEFT, TOP);
+    textSize(84);
+    text(String.format("Score: %d",s.GetScore()), 10,10);
+    textAlign(RIGHT, TOP);
+    text(String.format("Speed: %d ",100-turnLenght), X*boxSize-10,10);
+}
 
 void draw() {
+  
+  // show status
+  ShowStatus();
+  
+  
   for (int i = 0; i< boxes.length; i++) {
     for (int j = 0; j < boxes[i].length; j++) {
       int x = i * boxSize;
-      int y = j * boxSize;
+      int y = j * boxSize + 100;
       
       if(boxes[i][j] > 0) {
        fill(onBoxColor);
@@ -261,8 +288,8 @@ void draw() {
 
     textSize(96);
     text(String.format("Top Score: %d",topScore), ((X-0)*boxSize)/2,((Y-(Y/4))*boxSize)/2);
-    
-    text("Press Enter to Start", ((X-0)*boxSize)/2,((Y-0)*boxSize)/2);
+    text("Get to 100 Speed To Win!!", ((X-0)*boxSize)/2,((Y-0)*boxSize)/2);
+    text("Press Enter to Start", ((X-0)*boxSize)/2,((Y+25)*boxSize)/2);
    // show start screen 
    return;
   }
@@ -289,6 +316,12 @@ void draw() {
     currentTurn++;
 
     if(currentTurn > lastScoreBlockTurn + scoreBlockTurnInterval) {
+      if(currentTurn%beatInterval == 0) {
+       tri2.play();
+      }
+      if(currentTurn%beatInterval == 4) {
+       tri2.stop();
+      }
       lastScoreBlockTurn = currentTurn;
       AddScoreBlocks();
       AddBadBlocks();
@@ -333,6 +366,7 @@ void keyPressed() {
   else {
    paused = !paused;
    triangle.stop();
+   tri2.stop();
    return;
   }
  }
