@@ -5,7 +5,8 @@ final int X = 150;
 final int Y = 100;
 final int boxSize = 10;
 
-int turnLenght = 100;
+int turnLenght = 100; // how many miliseconds each turn takes
+int beatInterval = 8;
 int lastUpdateTime = 0;
 
 int currentTurn = 0;
@@ -125,6 +126,13 @@ class Snake {
      score += 10;
      size++;
      maxBadBlocks++;
+     turnLenght--;
+     if(turnLenght == 0) {
+       // you win!!
+       gameOver = true;
+       PlayDeathSound();
+     return;
+     }
      PlayEatSound();
     }
     
@@ -312,6 +320,7 @@ void keyPressed() {
    currentTurn = 0;
    lastUpdateTime = millis();
    lastScoreBlockTurn = 0;
+   turnLenght = 100;
    started = true;
    int i = 0;
    while(i < 1500) {
